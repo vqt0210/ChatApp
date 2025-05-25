@@ -1,4 +1,4 @@
-# 📱 ChatApp
+# 📱 My ChatApp
 
 A minimal real-time chat application built with **Flutter** and **Firebase**.  
 This app allows users to send and receive messages in real time using Firebase Authentication and Cloud Firestore.
