@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
           // sign out button
           IconButton(
             onPressed: signOut, 
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.exit_to_app),
               )
         ],
         ),
