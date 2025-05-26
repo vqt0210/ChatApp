@@ -1,4 +1,3 @@
-import 'package:chatapp/components/chat_bubble.dart';
 import 'package:chatapp/components/my_text_field.dart';
 import 'package:chatapp/services/chat/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
