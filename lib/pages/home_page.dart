@@ -13,85 +13,103 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  // instance of auth
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // sign user out
   void signOut() {
-    // get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
-
     authService.signOut();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text('Home Page'),
-        centerTitle: true,
-        actions: [
-          // sign out button
-          IconButton(
-            onPressed: signOut, 
-            icon: const Icon(Icons.exit_to_app),
-              )
-        ],
+        title: const Text(
+          'Chat Users',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        body: _buildUserList(),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        actions: [
+          IconButton(
+            onPressed: signOut,
+            icon: const Icon(Icons.logout),
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: _buildUserList(),
+      ),
     );
   }
-
-  // build a list of users except for the current logged in user
 
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot){
-        if ( snapshot.hasError) {
-          return const Text('error');
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Something went wrong'));
         }
 
-        if ( snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('loading..');
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
         }
 
         return ListView(
           children: snapshot.data!.docs
-          .map<Widget>((doc) => _buildUserListItem(doc))
-          .toList(),
+              .map<Widget>((doc) => _buildUserListItem(doc))
+              .toList(),
         );
       },
     );
   }
 
-  // build individual user list items
-
   Widget _buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-    // display all users  except current user
-    if (_auth.currentUser!.email != data['email']){
-      return ListTile(
-        title: Text(data['email']),
-        onTap: () {
-          // pass the clicked user's UID to the chat page
-          Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => ChatPage(
-                receiverUserEmail: data['email'],
-                receiverUserID: data['uid'],
-              ),
+    if (_auth.currentUser!.email != data['email']) {
+      return Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          leading: CircleAvatar(
+            backgroundColor: Colors.deepPurple,
+            child: Text(
+              data['email'][0].toUpperCase(),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          title: Text(
+            data['email'],
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+          trailing: const Icon(Icons.chat_bubble_outline),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  receiverUserEmail: data['email'],
+                  receiverUserID: data['uid'],
+                ),
               ),
             );
-        },
+          },
+        ),
       );
-
     } else {
-      // return empty container
-      return Container();
+      return const SizedBox.shrink();
     }
   }
 }
