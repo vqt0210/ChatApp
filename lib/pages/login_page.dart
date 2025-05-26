@@ -34,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Gradient background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

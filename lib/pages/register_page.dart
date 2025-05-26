@@ -13,133 +13,152 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // text controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  // sign up user
   void signUp() async {
     if (passwordController.text != confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-       const SnackBar(content: Text("Passwords do not match!!"),
-      ),
-    );
-    return;
+        const SnackBar(content: Text("Passwords do not match!")),
+      );
+      return;
     }
 
-
-    // get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
       await authService.signUpWithEmailandPassword(
-        emailController.text, 
+        emailController.text,
         passwordController.text,
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
+        SnackBar(content: Text(e.toString())),
       );
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 50),
-
-                // logo
-                Icon(
-                  Icons.message, 
-                  size: 100,
-                  color: Colors.grey[800],
-                  ),
-
-                  const SizedBox(height: 50),
-
-
-                // create account message
-                const Text(
-                  "Let's create an account for you!!",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                
-
-                const SizedBox(height: 25),
-            
-                // email textfield
-                MyTextField(
-                  controller: emailController, 
-                  hintText: 'Email', 
-                  obscureText: false,
-                  ),
-            
-
-                const SizedBox(height: 10),
-            
-                //password textfield
-                MyTextField(
-                  controller: passwordController, 
-                  hintText: 'Password', 
-                  obscureText: true,
-                ),
-
-                const SizedBox(height: 10),
-            
-                // confirm password textfield
-                MyTextField(
-                  controller: confirmPasswordController, 
-                  hintText: 'Confirm Password', 
-                  obscureText: true,
-                ),
-
-                const SizedBox(height: 25),
-            
-                //sign up button
-                MyButton(onTap: signUp, text: "Sign Up"),
-
-                const SizedBox(height: 50),
-
-
-                // not a member? register now
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFFFE5D9), Color(0xFFFFB3A7)], 
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Column(
                   children: [
-                    const Text('Already a member?'),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: widget.onTap ,
-                      child: const Text(
-                        'Login now',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                      
-                        ),
+                    const SizedBox(height: 30),
+
+                    // Icon
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 12,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    )
+                      child: Image.asset(
+                        'assets/images/register.png',
+                        height: 60,
+                        width: 60,
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    const Text(
+                      "Let's create an account for you!",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // White card form container
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          MyTextField(
+                            controller: emailController,
+                            hintText: 'Email',
+                            obscureText: false,
+                          ),
+                          const SizedBox(height: 15),
+                          MyTextField(
+                            controller: passwordController,
+                            hintText: 'Password',
+                            obscureText: true,
+                          ),
+                          const SizedBox(height: 15),
+                          MyTextField(
+                            controller: confirmPasswordController,
+                            hintText: 'Confirm Password',
+                            obscureText: true,
+                          ),
+                          const SizedBox(height: 25),
+                          MyButton(onTap: signUp, text: "Sign Up"),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Already a member?"),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: widget.onTap,
+                          child: const Text(
+                            "Login now",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                              color: Colors.deepOrangeAccent,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
-                )
-            
-              ],
+                ),
+              ),
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }
