@@ -83,37 +83,56 @@ class _ChatPageState extends State<ChatPage> {
 
   // build message item
 
-  Widget _buildMessageItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+Widget _buildMessageItem(DocumentSnapshot document) {
+  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+  // align the messages to the right if the send is the current user , otherwise to the left
 
 
-    // align the messages to the right if the send is the current user , otherwise to the left
+  bool isMe = data['senderId'] == _firebaseAuth.currentUser!.uid;
 
-    var  alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid) 
-    ? Alignment.centerRight 
-    : Alignment.centerLeft;
+  return Container(
+    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          Text(
+            data['senderEmail'],
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 5),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+            decoration: BoxDecoration(
+              color: isMe ? Colors.blue[300] : Colors.grey[300],
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(16),
+                topRight: const Radius.circular(16),
+                bottomLeft: Radius.circular(isMe ? 16 : 0),
+                bottomRight: Radius.circular(isMe ? 0 : 16),
+              ),
+            ),
+            child: Text(
+              data['message'],
+              style: TextStyle(
+                color: isMe ? Colors.white : Colors.black87,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
-    return Container(
-      alignment: alignment,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: (data['senderId'] == _firebaseAuth.currentUser!.uid) 
-              ? CrossAxisAlignment.end 
-              : CrossAxisAlignment.start ,
-          mainAxisAlignment: (data['senderId'] == _firebaseAuth.currentUser!.uid) 
-              ? MainAxisAlignment.end 
-              : MainAxisAlignment.start,
-          children: [
-            Text(data['senderEmail']),
-            const SizedBox(height: 5),
-            ChatBubble(message: data['message']),
-          ],
-        ),
-      )
-    );
-
-  }
 
   // build message input
 
