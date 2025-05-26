@@ -66,10 +66,10 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.message,
-                        size: 80,
-                        color: Colors.deepPurple,
+                      child: Image.asset(
+                        'assets/images/chaticon.png', 
+                        height: 60,
+                        width: 60,
                       ),
                     ),
 
